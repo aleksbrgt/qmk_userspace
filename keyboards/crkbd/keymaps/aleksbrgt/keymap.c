@@ -8,8 +8,8 @@ enum {
     HME,
     // Numbers and symbols
     //     > keypad like layout on the right side
-    //     > uses the number row key codes to easily combine numbers and symbols
-    //     > frames the numbers with remaining symbols
+    //     > number row key codes to easily combine numbers and symbols
+    //     > other symbols
     NUM,
     // Cursor movement
     //     > vi style arrow  keys
@@ -26,8 +26,8 @@ enum {
     // Misc, keys that don't fit well in other layout
     //     > Caps Lock
     //     > App Menu
-    //     > Include the right ctrl key with the intent to use it as the Compose Key
-    //         > See https://en.wikipedia.org/wiki/Compose_key),
+    //     > Includes the right ctrl key with the intent to use it as the Compose Key
+    //         > See https://en.wikipedia.org/wiki/Compose_key
     MSC
 };
 
@@ -49,7 +49,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [NUM] = LAYOUT_split_3x5_3(
         //   ---------------------------------------                      ---------------------------------------
-        //  |       |   (   |   )   |       |       |                    |  [ {  |  7 &  |  8 *  |   9   |  ] }  |
+        //  |   {   |   (   |   )   |   }   |       |                    |  [ {  |  7 &  |  8 *  |   9   |  ] }  |
         //  |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         //  |  GUI  |  ALT  | CTRL  |  SFT  |   -   |                    |  = +  |  4 $  |  5 %  |  6 ^  |  ; :  |
         //  |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
@@ -57,7 +57,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //   -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                          |  ESC  |  SPC  |  TAB  |    |       |   0   |       |
         //                           -------+-------+-------      -------+-------+-------
-        XXXXXXX,           KC_LPRN,           KC_RPRN,           XXXXXXX,           XXXXXXX,           KC_LBRC,           KC_7,              KC_8,              KC_9,              KC_RBRC,
+        KC_LCBR,           KC_LPRN,           KC_RPRN,           KC_RCBR,           XXXXXXX,           KC_LBRC,           KC_7,              KC_8,              KC_9,              KC_RBRC,
         KC_LGUI,           KC_LALT,           KC_LCTL,           KC_LSFT,           KC_MINS,           KC_EQL,            KC_4,              KC_5,              KC_6,              KC_SCLN,
         XXXXXXX,           XXXXXXX,           XXXXXXX,           XXXXXXX,           KC_UNDS,           KC_BSLS,           KC_1,              KC_2,              KC_3,              KC_GRV,
                                               KC_ESC,            KC_SPC,            KC_TAB,            XXXXXXX,           KC_0,              XXXXXXX
