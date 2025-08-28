@@ -1,3 +1,4 @@
 RGB_MATRIX_SUPPORTED = no
 COMBO_ENABLE = yes
 BOOTLOADER = atmel-dfu
+OLED_ENABLE = yes
