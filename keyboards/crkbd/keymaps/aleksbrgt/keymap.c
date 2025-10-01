@@ -13,6 +13,7 @@
 #define CC_SPC LT(NUM, KC_SPC)
 #define CC_TAB LT(MED, KC_TAB)
 #define CC_ENT LT(CUR, KC_ENT)
+#define CC_BSP LT(MSE, KC_BSPC)
 #define CC_DEL LT(FUN, KC_DEL)
 
 enum {
@@ -26,12 +27,15 @@ enum {
     //     > other symbols
     NUM,
     // Cursor movement
-    //     > vi style arrow  keys
+    //     > vim style arrow  keys
     //     > home / end, page up / page down
     CUR,
+    // Pointer movement
+    //     > vim style navigation
+    MSE,
     //  Media keys
     //     > volume up, down, mute
-    //     > previous, next, pause 
+    //     > previous, next, pause
     MED,
     // Function keys
     //     > F1 to F9 reuse the NUM layer numbers
@@ -59,7 +63,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,               KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,
         CC_A,     CC_S,     CC_D,     CC_F,     KC_G,               KC_H,     CC_J,     CC_K,     CC_L,     CC_QUOT,
         KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,               KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,
-					        CC_ESC,   CC_SPC,   CC_TAB,             CC_ENT,   KC_BSPC,  CC_DEL
+					        CC_ESC,   CC_SPC,   CC_TAB,             CC_ENT,   CC_BSP,  CC_DEL
     ),
     [NUM] = LAYOUT_split_3x5_3(
         //   ---------------------------------------                      ---------------------------------------
@@ -90,6 +94,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,  			XXXXXXX,  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    		KC_INS,   KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
                             KC_ESC,   KC_SPC,   KC_TAB,   			KC_ENT,   KC_BSPC,  KC_DEL
+    ),
+    [MSE] = LAYOUT_split_3x5_3(
+        //  ---------------------------------------                      ---------------------------------------
+        // |       |       |       |       |       |                    |       |  ← ←  |  ↓ ↓  |  ↑ ↑  |  → →  |
+        // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
+        // |  GUI  |  ALT  |  CTL  |  SFT  |       |                    |       |   ←   |   ↓   |   ↑   |   →   |
+        // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
+        // |       |       |       |       |       |                    |       |       |       |       |       |
+        //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
+        //                         |  BTN1 |  BTN2 |       |    |  ENT  |  BSPC |  DEL  |
+        //                          -------+-------+-------      -------+-------+-------
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  MS_WHLL,  MS_WHLD,  MS_WHLU,  MS_WHLR,
+        KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,  			XXXXXXX,  MS_LEFT,  MS_DOWN,  MS_UP,    MS_RGHT,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    		XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+                            MS_BTN1,  MS_BTN2,  XXXXXXX,   			XXXXXXX,  KC_BSPC,  XXXXXXX
     ),
     [MED] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
