@@ -58,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |   Z   |   X   |   C   |   V   |   B   |                    |   N   |   M   |   ,   |   .   |   /   |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
-        //                         |ESC MSC|SPC NUM|TAB MED|    |ENT CUR|  BSP  |DEL FUN|
+        //                         |ESC MSC|SPC NUM|TAB MED|    |ENT CUR|BSP MSE|DEL FUN|
         //                          ------+-------+-------      -------+-------+-------
         KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,               KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,
         CC_A,     CC_S,     CC_D,     CC_F,     KC_G,               KC_H,     CC_J,     CC_K,     CC_L,     CC_QUOT,
@@ -101,13 +101,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |  GUI  |  ALT  |  CTL  |  SFT  |       |                    |       |   ←   |   ↓   |   ↑   |   →   |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
-        // |       |       |       |       |       |                    |       |       |       |       |       |
+        // |       |   X   |   C   |   V   |       |                    |       |       |       |       |       |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                         |  BTN1 |  BTN2 |       |    |  ENT  |  BSPC |  DEL  |
         //                          -------+-------+-------      -------+-------+-------
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  MS_WHLL,  MS_WHLD,  MS_WHLU,  MS_WHLR,
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,  			XXXXXXX,  MS_LEFT,  MS_DOWN,  MS_UP,    MS_RGHT,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    		XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  KC_X,     KC_C,     KC_V,     XXXXXXX,    		XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
                             MS_BTN1,  MS_BTN2,  XXXXXXX,   			XXXXXXX,  KC_BSPC,  XXXXXXX
     ),
     [MED] = LAYOUT_split_3x5_3(
