@@ -86,13 +86,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |  GUI  |  ALT  |  CTL  |  SFT  |       |                    |       |   ←   |   ↓   |   ↑   |   →   |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
-        // |       |       |       |       |       |                    |  ins  | home  | pgdn  | pgup  |  end  |
+        // |       |       |       |       |       |                    |       | home  | pgdn  | pgup  |  end  |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                         |  ESC  |  SPC  |  TAB  |    |  ENT  |  BSPC |  DEL  |
         //                          -------+-------+-------      -------+-------+-------
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,  			XXXXXXX,  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    		KC_INS,   KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    		XXXXXXX,  KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
                             KC_ESC,   KC_SPC,   KC_TAB,   			KC_ENT,   KC_BSPC,  KC_DEL
     ),
     [MSE] = LAYOUT_split_3x5_3(
