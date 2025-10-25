@@ -17,36 +17,48 @@
 #define CC_DEL LT(FUN, KC_DEL)
 
 enum {
+    HME,
     // Home
     //     > qwerty
     //     > home row with modifiers
-    HME,
+
+    NUM,
     // Numbers and symbols
     //     > keypad like layout on the right side
     //     > number row key codes to easily combine numbers and symbols
     //     > other symbols
-    NUM,
-    // Cursor movement
-    //     > vim style arrow  keys
-    //     > home / end, page up / page down
+
     CUR,
+    // Cursor movement
+    //     > vim style arrow keys
+    //     > home / end, page up / page down
+
+    MSE,
     // Pointer movement
     //     > vim style navigation
-    MSE,
+
+    MED,
     //  Media keys
     //     > volume up, down, mute
     //     > previous, next, pause
-    MED,
+
+    FUN,
     // Function keys
     //     > F1 to F9 reuse the NUM layer numbers
     //     > F10 to F12 on the outer right column
-    FUN,
-    // Misc, keys that don't fit well in other layout
-    //     > Caps Lock
-    //     > App Menu
-    //     > Includes the right ctrl key with the intent to use it as the Compose Key
-    //         > See https://en.wikipedia.org/wiki/Compose_key
-    MSC
+
+	GME,
+	// Gaming
+	// 	   > Like the Home layer
+	//     > No home row modifier
+
+    MSC,
+    // Miscellaneous
+	//     > keys that don't fit well in other layout
+    //     > caps lock
+    //     > application menu
+    //     > includes the right ctrl key with the intent to use it as the Compose Key
+    //         > see https://en.wikipedia.org/wiki/Compose_key
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -59,7 +71,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |   Z   |   X   |   C   |   V   |   B   |                    |   N   |   M   |   ,   |   .   |   /   |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                         |ESC MSC|SPC NUM|TAB MED|    |ENT CUR|BSP MSE|DEL FUN|
-        //                          ------+-------+-------      -------+-------+-------
+        //                          ------+-------+--------      -------+-------+-------
         KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,               KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,
         CC_A,     CC_S,     CC_D,     CC_F,     KC_G,               KC_H,     CC_J,     CC_K,     CC_L,     CC_QUOT,
         KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,               KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,
@@ -140,19 +152,34 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  KC_F1,    KC_F2,    KC_F3,    KC_F12,
                             KC_ESC,   KC_SPC,   KC_TAB,             XXXXXXX,  XXXXXXX,  XXXXXXX
     ),
-    [MSC] = LAYOUT_split_3x5_3(
+	[GME] = LAYOUT_split_3x5_3(
+		//  ---------------------------------------                      ---------------------------------------
+        // |   Q   |   W   |   E   |   R   |   T   |                    |   Y   |   U   |   I   |   0   |   P   |
+        // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
+        // |   A   |   S   |   D   |   F   |   G   |                    |   H   |   J   |   K   |   L   |   '   |
+        // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
+        // |   Z   |   X   |   C   |   V   |   B   |                    |   N   |   M   |   ,   |   .   |   /   |
+        //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
+        //                         |  ESC  |  SPC  |  TAB  |    |  ENT  |  BSP  |  DEL  |
+        //                          ------+-------+--------      -------+-------+-------
+        KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,               KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,
+        KC_A,     KC_S,     KC_D,     KC_F,     KC_G,               KC_H,     KC_J,     KC_K,     KC_L,     KC_QUOT,
+        KC_Z,     KC_X,     KC_C,     KC_V,     KC_B,               KC_N,     KC_M,     KC_COMM,  KC_DOT,   KC_SLSH,
+					        CC_ESC,   KC_SPC,   KC_TAB,             KC_ENT,   KC_BSPC,  KC_DEL
+	),
+	[MSC] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
-        // |       |       |       |       |       |                    |       |       |       |       |  PSCR |
+        // |       |       |       |       |       |                    |  GME  |       |       |       |  PSCR |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |  CAPS |       |       |       |       |                    |       |       |       |       |  RCTL |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
-        // |       |  CUT  | COPY  | PASTE |       |                    |       |       |       |       |  APP  |
+        // |       |       |       |       |       |                    |       |       |       |       |  APP  |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                         |  ESC  |  SPC  |  TAB  |    |       |       |       |
         //                          -------+-------+-------      -------+-------+-------
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_PSCR,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            TG(GME),  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_PSCR,
         KC_CAPS,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_RCTL,
-        XXXXXXX,  KC_CUT,   KC_COPY,  KC_PASTE, XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_APP,
-                            KC_ESC,   KC_SPC,   KC_TAB,             XXXXXXX,  XXXXXXX,  XXXXXXX
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_APP,
+                            XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX
     )
 };
