@@ -11,10 +11,10 @@
 #define CC_QUOT LGUI_T(KC_QUOT)
 #define CC_ESC LT(MSC, KC_ESC)
 #define CC_SPC LT(NUM, KC_SPC)
-#define CC_TAB LT(MED, KC_TAB)
+#define CC_TAB LT(FUN, KC_TAB)
 #define CC_ENT LT(CUR, KC_ENT)
 #define CC_BSP LT(MSE, KC_BSPC)
-#define CC_DEL LT(FUN, KC_DEL)
+#define CC_DEL LT(MED, KC_DEL)
 
 enum {
     HME,
@@ -70,7 +70,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |   Z   |   X   |   C   |   V   |   B   |                    |   N   |   M   |   ,   |   .   |   /   |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
-        //                         |ESC MSC|SPC NUM|TAB MED|    |ENT CUR|BSP MSE|DEL FUN|
+        //                         |ESC MSC|SPC NUM|TAB FUN|    |ENT CUR|BSP MSE|DEL MED|
         //                          ------+-------+--------      -------+-------+-------
         KC_Q,     KC_W,     KC_E,     KC_R,     KC_T,               KC_Y,     KC_U,     KC_I,     KC_O,     KC_P,
         CC_A,     CC_S,     CC_D,     CC_F,     KC_G,               KC_H,     CC_J,     CC_K,     CC_L,     CC_QUOT,
