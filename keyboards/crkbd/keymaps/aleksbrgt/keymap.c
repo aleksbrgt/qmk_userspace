@@ -85,12 +85,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //  |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         //  |       |       |       |       |   _   |                    |  \ |  |  1 !  |  2 @  |  3 #  |  ` ~  |
         //   -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
-        //                          |  ESC  |  SPC  |  TAB  |    |       |   0   |       |
+        //                          |  ESC  |       |  TAB  |    |       |   0   |       |
         //                           -------+-------+-------      -------+-------+-------
         KC_LCBR,  KC_LPRN,  KC_RPRN,  KC_RCBR,  XXXXXXX,            KC_LBRC,  KC_7,     KC_8,     KC_9,     KC_RBRC,
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  KC_MINS,            KC_EQL,   KC_4,     KC_5,     KC_6,     KC_SCLN,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_UNDS,            KC_BSLS,  KC_1,     KC_2,     KC_3,     KC_GRV,
-                            KC_ESC,   KC_SPC,   KC_TAB,             XXXXXXX,  KC_0,     XXXXXXX
+                            KC_ESC,   XXXXXXX,  KC_TAB,             XXXXXXX,  KC_0,     XXXXXXX
     ),
     [CUR] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
@@ -98,14 +98,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |  GUI  |  ALT  |  CTL  |  SFT  |       |                    |       |   ←   |   ↓   |   ↑   |   →   |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
-        // |       |       |       |       |       |                    |       | home  | pgdn  | pgup  |  end  |
+        // |       |   X   |   C   |   V   |       |                    |       | home  | pgdn  | pgup  |  end  |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
-        //                         |  ESC  |  SPC  |  TAB  |    |  ENT  |  BSPC |  DEL  |
+        //                         |  ESC  |  SPC  |  TAB  |    |       |  BSPC |  DEL  |
         //                          -------+-------+-------      -------+-------+-------
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,  			XXXXXXX,  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,    		XXXXXXX,  KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
-                            KC_ESC,   KC_SPC,   KC_TAB,   			KC_ENT,   KC_BSPC,  KC_DEL
+        XXXXXXX,  KC_X,     KC_C,     KC_V,     XXXXXXX,    		XXXXXXX,  KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
+                            KC_ESC,   KC_SPC,   KC_TAB,   			XXXXXXX,   KC_BSPC,  KC_DEL
     ),
     [MSE] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
@@ -115,12 +115,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |       |   X   |   C   |   V   |       |                    |       |       |       |       |       |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
-        //                         |  BTN1 |  BTN2 |       |    |  ENT  |  BSPC |  DEL  |
+        //                         |  BTN1 |  BTN2 |       |    |       |       |       |
         //                          -------+-------+-------      -------+-------+-------
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  MS_WHLL,  MS_WHLD,  MS_WHLU,  MS_WHLR,
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,  			XXXXXXX,  MS_LEFT,  MS_DOWN,  MS_UP,    MS_RGHT,
         XXXXXXX,  KC_X,     KC_C,     KC_V,     XXXXXXX,    		XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
-                            MS_BTN1,  MS_BTN2,  XXXXXXX,   			XXXXXXX,  KC_BSPC,  XXXXXXX
+                            MS_BTN1,  MS_BTN2,  XXXXXXX,   			XXXXXXX,  XXXXXXX,  XXXXXXX
     ),
     [MED] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
@@ -130,20 +130,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |       |       |       |       |       |                    |       |       |       |       |       |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
-        //                         |  ESC  |  SPC  |  TAB  |    |       | PLAY  |  MUTE |
+        //                         |  ESC  |  SPC  |       |    |       | PLAY  |  MUTE |
         //                          -------+-------+-------      -------+-------+-------
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,            XXXXXXX,  KC_MPRV,  KC_VOLD,  KC_VOLU,  KC_MNXT,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
-                            KC_ESC,   KC_SPC,   KC_TAB,             XXXXXXX,  KC_MPLY,  KC_MUTE
+                            KC_ESC,   KC_SPC,   XXXXXXX,            XXXXXXX,  KC_MPLY,  KC_MUTE
     ),
     [FUN] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
-        // |       |       |       |       |       |                    |       |  F 7  |  F 8  |  F 9  |  F10  |
+        // |       |       |       |       |       |                    |       |   F7  |   F8  |   F9  |  F10  |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
-        // |  GUI  |  ALT  |  CTL  |  SFT  |       |                    |       |  F 4  |  F 5  |  F 6  |  F11  |
+        // |  GUI  |  ALT  |  CTL  |  SFT  |       |                    |       |   F4  |   F5  |   F6  |  F11  |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
-        // |       |       |       |       |       |                    |       |  F 1  |  F 2  |  F 3  |  F12  |
+        // |       |       |       |       |       |                    |       |   F1  |   F2  |   F3  |  F12  |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                         |  ESC  |  SPC  |  TAB  |    |       |       |       |
         //                          -------+-------+-------      -------+-------+-------
@@ -171,14 +171,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //  ---------------------------------------                      ---------------------------------------
         // |       |       |       |       |       |                    |  GME  |       |       |       |  PSCR |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
-        // |  CAPS |       |       |       |       |                    |       |       |       |       |  RCTL |
+        // |  CAPS |       |       |       |       |                    |       |       |BRIGHT-|BRIGHT+|  RCTL |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
         // |       |       |       |       |       |                    |       |       |       |       |  APP  |
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                         |  ESC  |  SPC  |  TAB  |    |       |       |       |
         //                          -------+-------+-------      -------+-------+-------
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            TG(GME),  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_PSCR,
-        KC_CAPS,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_RCTL,
+        KC_CAPS,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  KC_BRID,  KC_BRIU,  KC_RCTL,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_APP,
                             XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX
     )
