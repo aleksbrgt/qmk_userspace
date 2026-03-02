@@ -1,5 +1,6 @@
 #include QMK_KEYBOARD_H
 #include <stdio.h>
+#include "matrix.h"
 
 #define CC_A LGUI_T(KC_A)
 #define CC_S LALT_T(KC_S)
@@ -12,11 +13,11 @@
 #define CC_ESC LT(MSC, KC_ESC)
 #define CC_SPC LT(NUM, KC_SPC)
 #define CC_TAB LT(FUN, KC_TAB)
-#define CC_ENT LT(CUR, KC_ENT)
-#define CC_BSP LT(MSE, KC_BSPC)
+#define CC_ENT LT(NAV, KC_ENT)
+#define CC_BSP LT(PNT, KC_BSPC)
 #define CC_DEL LT(MED, KC_DEL)
 
-enum {
+enum layers {
     HME,
     // Home
     //     > qwerty
@@ -28,12 +29,12 @@ enum {
     //     > number row key codes to easily combine numbers and symbols
     //     > other symbols
 
-    CUR,
+    NAV,
     // Cursor movement
-    //     > vim style arrow keys
-    //     > home / end, page up / page down
+    //     > vim style navigation
+    //     > insert, home / end, page up / page down
 
-    MSE,
+    PNT,
     // Pointer movement
     //     > vim style navigation
 
@@ -59,6 +60,7 @@ enum {
     //     > application menu
     //     > includes the right ctrl key with the intent to use it as the Compose Key
     //         > see https://en.wikipedia.org/wiki/Compose_key
+    _LAYER_COUNT,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -92,7 +94,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_UNDS,            KC_BSLS,  KC_1,     KC_2,     KC_3,     KC_GRV,
                             KC_ESC,   XXXXXXX,  KC_TAB,             XXXXXXX,  KC_0,     XXXXXXX
     ),
-    [CUR] = LAYOUT_split_3x5_3(
+    [NAV] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
         // |       |       |       |       |       |                    |       |       |       |       |       |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
@@ -102,12 +104,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                         |  ESC  |  SPC  |  TAB  |    |       |  BSPC |  DEL  |
         //                          -------+-------+-------      -------+-------+-------
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC_0,  KC_1,  KC_2,  KC_3,  XXXXXXX,                       XXXXXXX,  KC_1,  KC_2,  KC_3,  KC_0,
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,  			XXXXXXX,  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,
         XXXXXXX,  KC_X,     KC_C,     KC_V,     XXXXXXX,    		KC_INS,   KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
                             KC_ESC,   KC_SPC,   KC_TAB,   			XXXXXXX,  KC_BSPC,  KC_DEL
     ),
-    [MSE] = LAYOUT_split_3x5_3(
+    [PNT] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
         // |       |       |       |       |       |                    |       |  ← ←  |  ↓ ↓  |  ↑ ↑  |  → →  |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
@@ -183,3 +185,195 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                             XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX
     )
 };
+
+typedef struct {
+    uint16_t pressed;
+    uint16_t held;
+} kc_state_t;
+
+static kc_state_t kc_state = { 0 };
+
+static const char * const layer_names[_LAYER_COUNT] PROGMEM = {
+    [HME] = "Home",
+    [NUM] = "Num",
+    [NAV] = "Nav",
+    [PNT] = "Pointer",
+    [MED] = "Media",
+    [FUN] = "Function",
+    [GME] = "Gaming",
+    [MSC] = "Misc"
+};
+
+static const char alphanumeric_kc_names[38] PROGMEM = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
+static const char symbol_kc_names[12] PROGMEM = {'-', '=', '[', ']', '\\', '#', ';', '\'', '`', ',', '.', '/'};
+
+typedef struct {
+    uint16_t keycode;
+    const char *label;
+} key_label_t;
+
+static const key_label_t kc_labels[] PROGMEM = {
+    { KC_ENT, "Return" },
+    { KC_ESC, "Escape" },
+    { KC_BSPC, "Backspace" },
+    { KC_TAB, "Tab" },
+    { 44, "Space" },
+    { KC_CAPS, "Caps" },
+    { KC_DEL, "Delete" },
+    { KC_LGUI, "Super" },
+    { KC_LALT, "Alt" },
+    { KC_LCTL, "Control" },
+    { KC_LSFT, "Shift" },
+    { KC_LEFT, "Left" },
+    { KC_DOWN, "Down" },
+    { KC_UP, "Up" },
+    { KC_RGHT, "Right" },
+    { KC_INS, "Insert" },
+    { KC_HOME, "Home" },
+    { KC_PGDN, "Page down" },
+    { KC_PGUP, "Page up" },
+    { KC_END, "End" },
+    { MS_WHLL, "Scroll left" },
+    { MS_WHLD, "Scroll down" },
+    { MS_WHLU, "Scroll up" },
+    { MS_WHLR, "Scroll right" },
+    { MS_LEFT, "Mouse left" },
+    { MS_DOWN, "Mouse down" },
+    { MS_UP, "Mouse up" },
+    { MS_RGHT, "Mouse right" },
+    { MS_BTN1, "Left click" },
+    { MS_BTN2, "Right click" },
+    { MS_BTN3, "Wheel click" },
+    { KC_MRWD, "Rewind" },
+    { KC_MFFD, "Forward" },
+    { KC_VOLU, "Vol +" },
+    { KC_VOLD, "Vol -" },
+    { KC_MUTE, "Mute" },
+    { KC_MNXT, "Next" },
+    { KC_MPRV, "Prev" },
+    { KC_MPLY, "Play/Pause" },
+    { KC_F1, "F1" },
+    { KC_F2, "F2" },
+    { KC_F3, "F3" },
+    { KC_F4, "F4" },
+    { KC_F5, "F5" },
+    { KC_F6, "F6" },
+    { KC_F7, "F7" },
+    { KC_F8, "F8" },
+    { KC_F9, "F9" },
+    { KC_F10, "F10" },
+    { KC_F11, "F11" },
+    { KC_F12, "F12" },
+    { KC_F13, "F13" },
+    { KC_F14, "F14" },
+    { KC_F15, "F15" },
+    { KC_PWR, "Power" },
+    { KC_PSCR, "Print screen" },
+    { KC_BRID, "Brigtness -" },
+    { KC_BRIU, "Brightnes +" },
+    { KC_RCTL, "Compose key" },
+    { KC_APP, "Menu" },
+    { KC_LCBR, "{" },
+    { KC_RBRC, "}" },
+    { KC_LPRN, "(" },
+    { KC_RPRN, ")" },
+};
+
+const char *int_string(uint16_t value) {
+    static char buffer[5];
+    snprintf(buffer, sizeof(buffer), "%i", value);
+
+    return buffer;
+}
+
+static const char *special_keycode_str(uint16_t keycode) {
+    for (uint16_t i = 0; i < ARRAY_SIZE(kc_labels); i++) {
+        key_label_t entry;
+        memcpy_P(&entry, &kc_labels[i], sizeof(key_label_t));
+
+        if (keycode == entry.keycode) {
+            return entry.label;
+        }
+    }
+
+    return "?";
+}
+
+static const char *keycode_string(uint16_t keycode) {
+    static char key;
+
+    if (0 == keycode) {
+        return "";
+    }
+
+    if (4 <= keycode && keycode <= 39) {
+        key = pgm_read_byte(&alphanumeric_kc_names[keycode - 4]);
+        
+        return &key;
+    }
+
+    if (45 <= keycode && keycode <= 57) {
+        key = pgm_read_byte(&symbol_kc_names[keycode- 45]);
+        
+        return &key;
+    }
+
+    if (KC_UNDS == keycode) {
+        return "_";
+    }
+
+    return special_keycode_str(keycode);
+}
+
+const char *layer_string(uint8_t layer) {
+    if (layer < _LAYER_COUNT) {
+        return (const char *)pgm_read_ptr(&layer_names[layer]);
+    }
+
+    return get_u8_str(layer, ' ');
+}
+
+uint16_t get_keycode(uint16_t keycode) {
+    if (IS_QK_MOD_TAP(keycode)) {
+        return QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+    }
+
+    if (IS_QK_LAYER_TAP(keycode)) {
+        return QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+    }
+
+    return keycode;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        return true;
+    }
+
+    if (IS_QK_MOD_TAP(keycode)) {
+        kc_state.pressed = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+
+        return true;
+    }
+
+    if (IS_QK_LAYER_TAP(keycode)) {
+        kc_state.pressed = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+
+        return true;
+    }
+
+    kc_state.pressed = keycode;
+
+    return true;
+};
+
+bool oled_task_user(void) {
+    oled_write("Layer: ", false);
+    oled_write_ln(layer_string(get_highest_layer(layer_state)), false);
+
+    oled_write("Key  : ", false);
+    oled_write_ln(keycode_string(kc_state.pressed), false);
+
+    return false;
+}
+
