@@ -1,5 +1,7 @@
 #include QMK_KEYBOARD_H
 #include <stdio.h>
+#include "_keycodes.h"
+#include "_menu.h"
 
 #define CC_A LGUI_T(KC_A)
 #define CC_S LALT_T(KC_S)
@@ -12,11 +14,11 @@
 #define CC_ESC LT(MSC, KC_ESC)
 #define CC_SPC LT(NUM, KC_SPC)
 #define CC_TAB LT(FUN, KC_TAB)
-#define CC_ENT LT(CUR, KC_ENT)
-#define CC_BSP LT(MSE, KC_BSPC)
+#define CC_ENT LT(NAV, KC_ENT)
+#define CC_BSP LT(PNT, KC_BSPC)
 #define CC_DEL LT(MED, KC_DEL)
 
-enum {
+enum layers {
     HME,
     // Home
     //     > qwerty
@@ -28,12 +30,12 @@ enum {
     //     > number row key codes to easily combine numbers and symbols
     //     > other symbols
 
-    CUR,
+    NAV,
     // Cursor movement
-    //     > vim style arrow keys
-    //     > home / end, page up / page down
+    //     > vim style navigation
+    //     > insert, home / end, page up / page down
 
-    MSE,
+    PNT,
     // Pointer movement
     //     > vim style navigation
 
@@ -59,6 +61,11 @@ enum {
     //     > application menu
     //     > includes the right ctrl key with the intent to use it as the Compose Key
     //         > see https://en.wikipedia.org/wiki/Compose_key
+
+    SET,
+    //
+
+    _LAYER_COUNT,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -92,7 +99,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_UNDS,            KC_BSLS,  KC_1,     KC_2,     KC_3,     KC_GRV,
                             KC_ESC,   XXXXXXX,  KC_TAB,             XXXXXXX,  KC_0,     XXXXXXX
     ),
-    [CUR] = LAYOUT_split_3x5_3(
+    [NAV] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
         // |       |       |       |       |       |                    |       |       |       |       |       |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
@@ -102,12 +109,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
         //                         |  ESC  |  SPC  |  TAB  |    |       |  BSPC |  DEL  |
         //                          -------+-------+-------      -------+-------+-------
-        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        KC_0,  KC_1,  KC_2,  KC_3,  XXXXXXX,                       XXXXXXX,  KC_1,  KC_2,  KC_3,  KC_0,
         KC_LGUI,  KC_LALT,  KC_LCTL,  KC_LSFT,  XXXXXXX,  			XXXXXXX,  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT,
         XXXXXXX,  KC_X,     KC_C,     KC_V,     XXXXXXX,    		KC_INS,   KC_HOME,  KC_PGDN,  KC_PGUP,  KC_END,
                             KC_ESC,   KC_SPC,   KC_TAB,   			XXXXXXX,  KC_BSPC,  KC_DEL
     ),
-    [MSE] = LAYOUT_split_3x5_3(
+    [PNT] = LAYOUT_split_3x5_3(
         //  ---------------------------------------                      ---------------------------------------
         // |       |       |       |       |       |                    |       |  ← ←  |  ↓ ↓  |  ↑ ↑  |  → →  |
         // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
@@ -178,8 +185,139 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //                         |  ESC  |  SPC  |  TAB  |    |       |       |       |
         //                          -------+-------+-------      -------+-------+-------
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_PWR,             TG(GME),  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_PSCR,
-        KC_CAPS,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  KC_BRID,  KC_BRIU,  KC_RCTL,
+        KC_CAPS,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TG(SET),            XXXXXXX,  XXXXXXX,  KC_BRID,  KC_BRIU,  KC_RCTL,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_APP,
                             XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX
+    ),
+    [SET] = LAYOUT_split_3x5_3(
+        //  ---------------------------------------                      ---------------------------------------
+        // |       |       |       |       | POWER |                    |  GME  |       |       |       |  PSCR |
+        // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
+        // |  CAPS |       |       |       |       |                    |       |       |BRIGHT-|BRIGHT+|  RCTL |
+        // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
+        // |       |       |       |       |       |                    |       |       |       |       |  APP  |
+        //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
+        //                         |  ESC  |  SPC  |  TAB  |    |       |       |       |
+        //                          -------+-------+-------      -------+-------+-------
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TG(SET),            XXXXXXX,  KC_MENU_LEFT,  KC_MENU_UP,  KC_MENU_DOWN,  KC_MENU_RIGHT,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_APP,
+                            KC_MENU_ESCAPE,  XXXXXXX,  XXXXXXX,            KC_MENU_SELECT,  XXXXXXX,  XXXXXXX
     )
 };
+
+typedef struct {
+    uint16_t pressed;
+    uint16_t held;
+} kc_state_t;
+
+static kc_state_t kc_state = { 0 };
+
+typedef union {
+    uint32_t raw;
+    struct {
+        uint8_t oled_brightness;
+        uint8_t oled_brightness_step;
+        // uint8_t oled_timeout;
+        // bool oled_enabled;
+        // timeout mode
+    };
+} user_configuration_t;
+
+static user_configuration_t user_configuration;
+
+void keyboard_post_init_user(void) {
+  user_configuration.raw = eeconfig_read_user();
+  user_configuration.oled_brightness_step = 25;
+}
+
+static const char * const layer_names[_LAYER_COUNT] PROGMEM = {
+    [HME] = "Home",
+    [NUM] = "Num",
+    [NAV] = "Nav",
+    [PNT] = "Pointer",
+    [MED] = "Media",
+    [FUN] = "Function",
+    [GME] = "Gaming",
+    [MSC] = "Misc",
+    [SET] = "Setting",
+};
+
+const char *int_string(uint16_t value) {
+    static char buffer[5];
+    snprintf(buffer, sizeof(buffer), "%i", value);
+
+    return buffer;
+}
+
+
+const char *layer_string(uint8_t layer) {
+    if (layer < _LAYER_COUNT) {
+        return (const char *)pgm_read_ptr(&layer_names[layer]);
+    }
+
+    return get_u8_str(layer, ' ');
+}
+
+void increase_brightness(void)
+{
+    if (255 < user_configuration.oled_brightness + user_configuration.oled_brightness_step) {
+        user_configuration.oled_brightness = 255;
+
+        return;
+    }
+
+    user_configuration.oled_brightness = user_configuration.oled_brightness + user_configuration.oled_brightness_step;
+}
+
+void decrease_brightness(void)
+{
+    if (0 > user_configuration.oled_brightness - user_configuration.oled_brightness_step) {
+        user_configuration.oled_brightness = 0;
+
+        return;
+    }
+
+    user_configuration.oled_brightness = user_configuration.oled_brightness - user_configuration.oled_brightness_step;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    if (SET == get_highest_layer(state) && !menu_showing()) {
+        menu_on();
+    }
+
+    return state;
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    if (!record->event.pressed) {
+        return true;
+    }
+
+    kc_state.pressed = get_keycode(keycode);
+
+    if (KC_MENU_UP <= keycode && KC_MENU_ESCAPE >= keycode) {
+        menu_handle_input(keycode);
+    }
+
+    return true;
+};
+
+bool oled_task_user(void) {
+    if (menu_showing()) {
+        menu_draw_on_screen();
+        return false;
+    }
+
+    oled_write("Layer: ", false);
+    oled_write_ln(layer_string(get_highest_layer(layer_state)), false);
+
+    oled_write("Key  : ", false);
+//    oled_write_ln(int_string(kc_state.pressed), false);
+    oled_write_ln(keycode_string(kc_state.pressed), false);
+
+    // oled_write("EE Oled: ", false);
+    // oled_write_ln(keycode_string(user_configuration.oled_brightness), false);
+
+    return false;
+}
