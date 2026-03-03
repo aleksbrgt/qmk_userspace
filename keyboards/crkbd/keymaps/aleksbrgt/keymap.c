@@ -1,6 +1,7 @@
 #include QMK_KEYBOARD_H
 #include <stdio.h>
-#include "matrix.h"
+#include "_keycodes.h"
+#include "_menu.h"
 
 #define CC_A LGUI_T(KC_A)
 #define CC_S LALT_T(KC_S)
@@ -60,6 +61,10 @@ enum layers {
     //     > application menu
     //     > includes the right ctrl key with the intent to use it as the Compose Key
     //         > see https://en.wikipedia.org/wiki/Compose_key
+
+    SET,
+    //
+
     _LAYER_COUNT,
 };
 
@@ -180,9 +185,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         //                         |  ESC  |  SPC  |  TAB  |    |       |       |       |
         //                          -------+-------+-------      -------+-------+-------
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_PWR,             TG(GME),  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_PSCR,
-        KC_CAPS,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  KC_BRID,  KC_BRIU,  KC_RCTL,
+        KC_CAPS,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TG(SET),            XXXXXXX,  XXXXXXX,  KC_BRID,  KC_BRIU,  KC_RCTL,
         XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_APP,
                             XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX
+    ),
+    [SET] = LAYOUT_split_3x5_3(
+        //  ---------------------------------------                      ---------------------------------------
+        // |       |       |       |       | POWER |                    |  GME  |       |       |       |  PSCR |
+        // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
+        // |  CAPS |       |       |       |       |                    |       |       |BRIGHT-|BRIGHT+|  RCTL |
+        // |-------+-------+-------+-------+-------|                    |-------+-------+-------+-------+-------|
+        // |       |       |       |       |       |                    |       |       |       |       |  APP  |
+        //  -------+-------+-------+-------+-------+-------      -------+-------+-------+-------+-------+-------
+        //                         |  ESC  |  SPC  |  TAB  |    |       |       |       |
+        //                          -------+-------+-------      -------+-------+-------
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  TG(SET),            XXXXXXX,  KC_MENU_LEFT,  KC_MENU_UP,  KC_MENU_DOWN,  KC_MENU_RIGHT,
+        XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,            XXXXXXX,  XXXXXXX,  XXXXXXX,  XXXXXXX,  KC_APP,
+                            KC_MENU_ESCAPE,  XXXXXXX,  XXXXXXX,            KC_MENU_SELECT,  XXXXXXX,  XXXXXXX
     )
 };
 
@@ -193,6 +213,24 @@ typedef struct {
 
 static kc_state_t kc_state = { 0 };
 
+typedef union {
+    uint32_t raw;
+    struct {
+        uint8_t oled_brightness;
+        uint8_t oled_brightness_step;
+        // uint8_t oled_timeout;
+        // bool oled_enabled;
+        // timeout mode
+    };
+} user_configuration_t;
+
+static user_configuration_t user_configuration;
+
+void keyboard_post_init_user(void) {
+  user_configuration.raw = eeconfig_read_user();
+  user_configuration.oled_brightness_step = 25;
+}
+
 static const char * const layer_names[_LAYER_COUNT] PROGMEM = {
     [HME] = "Home",
     [NUM] = "Num",
@@ -201,82 +239,8 @@ static const char * const layer_names[_LAYER_COUNT] PROGMEM = {
     [MED] = "Media",
     [FUN] = "Function",
     [GME] = "Gaming",
-    [MSC] = "Misc"
-};
-
-static const char alphanumeric_kc_names[38] PROGMEM = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'};
-static const char symbol_kc_names[12] PROGMEM = {'-', '=', '[', ']', '\\', '#', ';', '\'', '`', ',', '.', '/'};
-
-typedef struct {
-    uint16_t keycode;
-    const char *label;
-} key_label_t;
-
-static const key_label_t kc_labels[] PROGMEM = {
-    { KC_ENT, "Return" },
-    { KC_ESC, "Escape" },
-    { KC_BSPC, "Backspace" },
-    { KC_TAB, "Tab" },
-    { 44, "Space" },
-    { KC_CAPS, "Caps" },
-    { KC_DEL, "Delete" },
-    { KC_LGUI, "Super" },
-    { KC_LALT, "Alt" },
-    { KC_LCTL, "Control" },
-    { KC_LSFT, "Shift" },
-    { KC_LEFT, "Left" },
-    { KC_DOWN, "Down" },
-    { KC_UP, "Up" },
-    { KC_RGHT, "Right" },
-    { KC_INS, "Insert" },
-    { KC_HOME, "Home" },
-    { KC_PGDN, "Page down" },
-    { KC_PGUP, "Page up" },
-    { KC_END, "End" },
-    { MS_WHLL, "Scroll left" },
-    { MS_WHLD, "Scroll down" },
-    { MS_WHLU, "Scroll up" },
-    { MS_WHLR, "Scroll right" },
-    { MS_LEFT, "Mouse left" },
-    { MS_DOWN, "Mouse down" },
-    { MS_UP, "Mouse up" },
-    { MS_RGHT, "Mouse right" },
-    { MS_BTN1, "Left click" },
-    { MS_BTN2, "Right click" },
-    { MS_BTN3, "Wheel click" },
-    { KC_MRWD, "Rewind" },
-    { KC_MFFD, "Forward" },
-    { KC_VOLU, "Vol +" },
-    { KC_VOLD, "Vol -" },
-    { KC_MUTE, "Mute" },
-    { KC_MNXT, "Next" },
-    { KC_MPRV, "Prev" },
-    { KC_MPLY, "Play/Pause" },
-    { KC_F1, "F1" },
-    { KC_F2, "F2" },
-    { KC_F3, "F3" },
-    { KC_F4, "F4" },
-    { KC_F5, "F5" },
-    { KC_F6, "F6" },
-    { KC_F7, "F7" },
-    { KC_F8, "F8" },
-    { KC_F9, "F9" },
-    { KC_F10, "F10" },
-    { KC_F11, "F11" },
-    { KC_F12, "F12" },
-    { KC_F13, "F13" },
-    { KC_F14, "F14" },
-    { KC_F15, "F15" },
-    { KC_PWR, "Power" },
-    { KC_PSCR, "Print screen" },
-    { KC_BRID, "Brigtness -" },
-    { KC_BRIU, "Brightnes +" },
-    { KC_RCTL, "Compose key" },
-    { KC_APP, "Menu" },
-    { KC_LCBR, "{" },
-    { KC_RBRC, "}" },
-    { KC_LPRN, "(" },
-    { KC_RPRN, ")" },
+    [MSC] = "Misc",
+    [SET] = "Setting",
 };
 
 const char *int_string(uint16_t value) {
@@ -286,44 +250,6 @@ const char *int_string(uint16_t value) {
     return buffer;
 }
 
-static const char *special_keycode_str(uint16_t keycode) {
-    for (uint16_t i = 0; i < ARRAY_SIZE(kc_labels); i++) {
-        key_label_t entry;
-        memcpy_P(&entry, &kc_labels[i], sizeof(key_label_t));
-
-        if (keycode == entry.keycode) {
-            return entry.label;
-        }
-    }
-
-    return "?";
-}
-
-static const char *keycode_string(uint16_t keycode) {
-    static char key;
-
-    if (0 == keycode) {
-        return "";
-    }
-
-    if (4 <= keycode && keycode <= 39) {
-        key = pgm_read_byte(&alphanumeric_kc_names[keycode - 4]);
-        
-        return &key;
-    }
-
-    if (45 <= keycode && keycode <= 57) {
-        key = pgm_read_byte(&symbol_kc_names[keycode- 45]);
-        
-        return &key;
-    }
-
-    if (KC_UNDS == keycode) {
-        return "_";
-    }
-
-    return special_keycode_str(keycode);
-}
 
 const char *layer_string(uint8_t layer) {
     if (layer < _LAYER_COUNT) {
@@ -333,16 +259,34 @@ const char *layer_string(uint8_t layer) {
     return get_u8_str(layer, ' ');
 }
 
-uint16_t get_keycode(uint16_t keycode) {
-    if (IS_QK_MOD_TAP(keycode)) {
-        return QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+void increase_brightness(void)
+{
+    if (255 < user_configuration.oled_brightness + user_configuration.oled_brightness_step) {
+        user_configuration.oled_brightness = 255;
+
+        return;
     }
 
-    if (IS_QK_LAYER_TAP(keycode)) {
-        return QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
+    user_configuration.oled_brightness = user_configuration.oled_brightness + user_configuration.oled_brightness_step;
+}
+
+void decrease_brightness(void)
+{
+    if (0 > user_configuration.oled_brightness - user_configuration.oled_brightness_step) {
+        user_configuration.oled_brightness = 0;
+
+        return;
     }
 
-    return keycode;
+    user_configuration.oled_brightness = user_configuration.oled_brightness - user_configuration.oled_brightness_step;
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    if (SET == get_highest_layer(state) && !menu_showing()) {
+        menu_on();
+    }
+
+    return state;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -350,30 +294,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         return true;
     }
 
-    if (IS_QK_MOD_TAP(keycode)) {
-        kc_state.pressed = QK_MOD_TAP_GET_TAP_KEYCODE(keycode);
+    kc_state.pressed = get_keycode(keycode);
 
-        return true;
+    if (KC_MENU_UP <= keycode && KC_MENU_ESCAPE >= keycode) {
+        menu_handle_input(keycode);
     }
-
-    if (IS_QK_LAYER_TAP(keycode)) {
-        kc_state.pressed = QK_LAYER_TAP_GET_TAP_KEYCODE(keycode);
-
-        return true;
-    }
-
-    kc_state.pressed = keycode;
 
     return true;
 };
 
 bool oled_task_user(void) {
+    if (menu_showing()) {
+        menu_draw_on_screen();
+        return false;
+    }
+
     oled_write("Layer: ", false);
     oled_write_ln(layer_string(get_highest_layer(layer_state)), false);
 
     oled_write("Key  : ", false);
+//    oled_write_ln(int_string(kc_state.pressed), false);
     oled_write_ln(keycode_string(kc_state.pressed), false);
+
+    // oled_write("EE Oled: ", false);
+    // oled_write_ln(keycode_string(user_configuration.oled_brightness), false);
 
     return false;
 }
-
